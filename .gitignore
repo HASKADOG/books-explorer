@@ -156,7 +156,10 @@ Thumbs.db
 .prof
 
 # PyCharm stuff
-
 /.idea
+
+# DataBase stuff
+/migrations
+*.db
 
 # End of https://www.toptal.com/developers/gitignore/api/flask
