@@ -21,3 +21,4 @@ GoogleApis Books Explorer
 __version__ = '0.0.1'
 __author__ = 'Ramazan Safiullin <ram.safiullin2001@gmail.com>'
 
+from .books_explorer import BooksExplorer
