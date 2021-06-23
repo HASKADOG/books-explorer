@@ -4,16 +4,18 @@ from flask_restful import abort
 from copy import deepcopy
 
 class Books_manager(Book):
-
+    #load book from the database
     def load_book(self, book_id):
-        if self.__check_existance(book_id):
+        if self.__check_existence(book_id):
             self.__decompose(self.raw)
         else:
             abort(404, message="Book with id={} does not exist".format(book_id))
 
+
+    #raw dataset processor
     def add_dataset(self, dataset):
         for book in dataset:
-            if not self.__check_existance(book['book_id']):
+            if not self.__check_existence(book['book_id']):
                 book_id = book['book_id'] if book['book_id'] else None
                 title = book['title'] if book['title'] else None
                 date = self.__date_processor(book['published_date'])
@@ -35,10 +37,11 @@ class Books_manager(Book):
                 self.__asign_with_authors(book_id, authors)
                 self.__asign_with_categories(book_id, categories)
 
-
             else:
                 db.session.commit()
 
+
+    #returns finished book json
     def get_book_dict(self):
         return {
             'id': self.id,
@@ -51,6 +54,27 @@ class Books_manager(Book):
             'thumbnail': self.thumbnail
         }
 
+
+    #returns books sorted by year if order is given or just books by year if year is given
+    def get_books_by_year(self, order=None, year=None):
+        ids = []
+
+        if year:
+            books = Book.query.filter_by(published_year=year).all()
+            if not books:
+                abort(404, message="Books with year={} does not exist".format(year))
+        else:
+            books = Book.query.order_by(Book.published_year).all()
+
+        for book in books:
+            ids.append(book.book_id)
+
+        if order == "-":
+            ids.reverse()
+
+        return self.get_all_books(ids)
+
+    #gets all book_ids from the database
     def __get_all_ids(self):
         book_ids = []
 
@@ -61,9 +85,15 @@ class Books_manager(Book):
 
         return book_ids
 
-    def get_all_books(self):
+    #returns all books from the certain id range
+    #returns all books by default
+    def get_all_books(self, ids=None):
         quantity = 0
-        book_ids = self.__get_all_ids()
+        book_ids=ids
+
+        if not book_ids:
+            book_ids = self.__get_all_ids()
+
         books = []
 
         for book_id in book_ids:
@@ -78,7 +108,7 @@ class Books_manager(Book):
         }
 
 
-
+    #returns prepared date data for the database
     def __date_processor(self, published_date):
         date = published_date.split("-")
 
@@ -90,9 +120,7 @@ class Books_manager(Book):
             return [date[0], None, None]
 
 
-
-
-
+    #assigns book with its author
     def __asign_with_authors(self, book_id, authors):
         book = self.__get_book_by_id(book_id)
 
@@ -101,6 +129,8 @@ class Books_manager(Book):
 
         db.session.commit()
 
+
+    #assigns book with its category
     def __asign_with_categories(self, book_id, categories):
         book = self.__get_book_by_id(book_id)
 
@@ -109,6 +139,7 @@ class Books_manager(Book):
 
         db.session.commit()
 
+    #decomposes book for get_book_dict dunction
     def __decompose(self, book):
         self.id = book.book_id
         self.title = book.title
@@ -119,7 +150,8 @@ class Books_manager(Book):
         self.ratings_count = book.ratings_count
         self.thumbnail = book.thumbnail
 
-    def __check_existance(self, book_id):
+    #checks if book exist. also saves the book for the optimization
+    def __check_existence(self, book_id):
         self.raw = self.__get_book_by_id(book_id)
 
         if self.raw:
@@ -127,6 +159,7 @@ class Books_manager(Book):
 
         return False
 
+    #returns name property of the certain object
     def __get_names(self, iterable_obj):
         buffer = []
 
@@ -135,28 +168,32 @@ class Books_manager(Book):
 
         return buffer
 
+
+    #returns prepared date string
     def __get_date_str(self, book):
         date = ""
-
-        def less_than_ten(num):
-            if num < 10:
-                return "0" + str(num)
 
         if not book.published_day and not book.published_month and book.published_year:
             date = str(book.published_year)
         elif not book.published_day and  book.published_month and book.published_year:
-            date = str(book.published_year) + "-" + less_than_ten(book.published_month)
+            date = str(book.published_year) + "-" + str(book.published_month)
         else:
             date = str(book.published_year) + "-" + str(book.published_month) + "-" + str(book.published_day)
 
         return date
 
+
+    #adds book into the session
     def __add_book(self, new_book_obj):
         db.session.add(new_book_obj)
 
+
+    #get book by its book_id
     def __get_book_by_id(self, book_id):
         return Book.query.filter_by(book_id=book_id).first()
 
+
+    #commits
     def __commit_dataset(self):
         db.session.commit()
         db.session.remove()
@@ -165,6 +202,7 @@ class Books_manager(Book):
 
 class Authors_manager(Author):
 
+    #inserts authors objects into the dataset
     def add_authorship(self, dataset):
         dataset_processed = dataset
         books_counter = 0
@@ -173,7 +211,7 @@ class Authors_manager(Author):
         for book in dataset_processed:
             book['authors'] = book['authors'] if book['authors'] else []
             for author in book['authors']:
-                if self.__check_existance(author):
+                if self.__check_existence(author):
                     author_obj = deepcopy(self.raw)
                     dataset_processed[books_counter]['authors'][authors_counter] = author_obj
                 else:
@@ -181,7 +219,7 @@ class Authors_manager(Author):
 
                     db.session.add(author_obj)
                     self.__commit()
-                    self.__check_existance(author)
+                    self.__check_existence(author)
                     author_obj = deepcopy(self.raw)
                     dataset_processed[books_counter]['authors'][authors_counter] = author_obj
 
@@ -194,7 +232,31 @@ class Authors_manager(Author):
         return dataset_processed
 
 
-    def __check_existance(self, name):
+    #returns books ids assigned with the certain author
+    def get_authors_books_ids(self, name):
+        author = Author.query.filter_by(name=name).first()
+
+        if not author:
+            return None
+
+        ids = []
+
+        for book in author.books.all():
+            ids.append(book.book_id)
+
+        return ids
+
+
+    #returns a deep copy of the author objects.
+    #here's a bug with dinamic relations that I dont know how to fix :'(
+    def get_author(self, name):
+        self.__check_existence(name)
+
+        return deepcopy(self)
+
+
+    #check the authors existence
+    def __check_existence(self, name):
         self.raw = Author.query.filter_by(name=name).first()
 
         if self.raw:
@@ -202,11 +264,16 @@ class Authors_manager(Author):
 
         return False
 
+
+    #commits
     def __commit(self):
         db.session.commit()
         db.session.remove()
         db.session.close()
 
+
+#the same thing as the Author manager but with categories
+#I made another class for the obvious usage
 class Categories_manager(Category):
 
     def add_category_affiliation(self, dataset):
@@ -217,7 +284,7 @@ class Categories_manager(Category):
         for book in dataset_processed:
             book['categories'] = book['categories'] if book['categories'] else []
             for category in book['categories']:
-                if self.__check_existance(category):
+                if self.__check_existence(category):
                     category_obj = deepcopy(self.raw)
                     dataset_processed[books_counter]['categories'][categories_counter] = category_obj
                 else:
@@ -225,7 +292,7 @@ class Categories_manager(Category):
 
                     db.session.add(category_obj)
                     self.__commit()
-                    self.__check_existance(category)
+                    self.__check_existence(category)
                     category_obj = deepcopy(self.raw)
                     dataset_processed[books_counter]['categories'][categories_counter] = category_obj
 
@@ -237,8 +304,7 @@ class Categories_manager(Category):
 
         return dataset_processed
 
-
-    def __check_existance(self, name):
+    def __check_existence(self, name):
         self.raw = Category.query.filter_by(name=name).first()
 
         if self.raw:

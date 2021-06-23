@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #                         _                  _       _                 _
 #                        | |                (_)     | |               | |
 #  __ _  ___   ___   __ _| | ___  __ _ _ __  _ ___  | |__   ___   ___ | | _____
@@ -14,11 +12,21 @@
 GoogleApis Books Explorer
 ~~~~~~~~~~~~~~~~~~~~~
 
+Properties:
+    book_properties = {
+            'book_id': ['id'],
+            'title': ['volumeInfo', 'title'],
+            'authors': ['volumeInfo', 'authors'],
+            'categories': ['volumeInfo', 'categories'],
+            'published_date': ['volumeInfo', 'publishedDate'],
+            'average_rating': ['volumeInfo', 'averageRating'],
+            'ratings_count': ['volumeInfo', 'ratingsCount'],
+            'thumbnail': ['volumeInfo', 'imageLinks', 'thumbnail']
+        }
+    e.g:
+        'title'(name of the property) : ['volumeInfo', 'title'](JSON path)
 
 
 """
-
-__version__ = '0.0.1'
-__author__ = 'Ramazan Safiullin <ram.safiullin2001@gmail.com>'
 
 from .books_explorer import BooksExplorer

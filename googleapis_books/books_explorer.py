@@ -2,6 +2,7 @@ import requests, copy
 
 class BooksExplorer():
 
+    #dataset pattern
     book_properties = {
             'book_id': ['id'],
             'title': ['volumeInfo', 'title'],
@@ -13,17 +14,17 @@ class BooksExplorer():
             'thumbnail': ['volumeInfo', 'imageLinks', 'thumbnail']
         }
 
-    def __init__(self):
-        print('...BooksExplorer initiated...')
-
+    #returns loaded dataset for further manipulations
     def get_dataset(self, q):
         dataset = self.__get_dataset(q)
 
         return self.__decompose_books(dataset)
 
+    #fetches dataset from google books api
     def __get_dataset(self, q):
         return requests.get(url='https://www.googleapis.com/books/v1/volumes', params={'q': q}).json()
 
+    #decomposes books from JSON
     def __decompose_books(self, dataset):
         books = []
 
@@ -32,6 +33,7 @@ class BooksExplorer():
 
         return books
 
+    #checks if property in JSON
     def __get_checked_props(self, item):
         props = copy.deepcopy(self.book_properties)
 
