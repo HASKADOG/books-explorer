@@ -11,9 +11,12 @@ How to run
 2) pip install -r requirements.txt
 3) source venv/bin/activate
 4) export FLASK_APP=books_explorer.py
-5) flask run
+5) flask db init
+6) flask db migrate -m "anything"
+7) flask db upgrade
+8) flask run
 
-5.1) If you have your server and you want to use it not only in your localhost, use "flask run --host="0.0.0.0"
+8.1) If you have your server and you want to use it not only in your localhost, use "flask run --host="0.0.0.0"
 If you want to deploy it as I did, use this guide: https://www.youtube.com/watch?v=goToXTC96Co&t=4015s
 
 Methods
