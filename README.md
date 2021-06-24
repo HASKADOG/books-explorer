@@ -1,6 +1,8 @@
 Test assignment for STXnext |
 Author: Ramazan Safiullin |
-Phone: +48-575-047-127 
+Phone: +48-575-047-127 |
+Email: cplasplas16@gmail.com |
+Alternartive email: ram.safiullin2001@gmail.com
 
 Link to the application: https://ramazan.tech/books-explorer/v1/
 
