@@ -1,5 +1,5 @@
 Test assignment for STXnext |
-Author: Ramazan Safiullun |
+Author: Ramazan Safiullin |
 Phone: +48-575-047-127 
 
 Link to the application: https://ramazan.tech/books-explorer/v1/
