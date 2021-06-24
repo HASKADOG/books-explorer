@@ -19,8 +19,8 @@ If you want to deploy it as I did, use this guide: https://www.youtube.com/watch
 Methods
 1) GET /book - returns list of all books
 2) GET /book/<book_id> - return book with certain id
-3) GET /book?sort=-published_date - returns list of books sortde by years in descending order
-4) GET /book?sort=%2Bpublished_date - returns list of books sorted by years in ascending order. I suggest to use %2B instead of + because of the encoding.
+3) GET /book?sort=-published_date - returns list of books sorted by years in descending order
+4) GET /book?sort=%2Bpublished_date - returns list of books sorted by years in ascending order. I suggest to use %2B instead of "+" because of the encoding.
 5) GET /book?published_year=<year> - returns list of books that was published in certain year
 6) GET /book?author=<name_one>&author=<name_two> - returns list of books assigned with certain authors. Here's can be any quantity of authors
 7) POST /db with body {"q":"Hobbit"} - loads and writes new dataset to the application. If finished successfully, returns JSON with used query.
