@@ -20,7 +20,7 @@ Methods
 4) GET /book?sort=%2Bpublished_date - returns list of books sorted by years in ascending order. I suggest to use %2B instead of + because of the encoding.
 5) GET /book?published_year=<year> - returns list of books that was published in certain year
 6) GET /book?author=<name_one>&author=<name_two> - returns list of books assigned with certain authors. Here's can be any quantity of authors
-7) POST /db with body {"q":"<query>"} - loads and writes new dataset to the application. If finished successfully, returns JSON with used query.
+7) POST /db with body {"q":"Hobbit"} - loads and writes new dataset to the application. If finished successfully, returns JSON with used query.
 
 DataBase architecture
 
