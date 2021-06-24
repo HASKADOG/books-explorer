@@ -23,5 +23,7 @@ Methods
 7) POST /db with body {"q":"<query>"} - loads and writes new dataset to the application. If finished successfully, returns JSON with used query.
 
 DataBase architecture
-![image](https://user-images.githubusercontent.com/27897422/123191833-1d855580-d4a2-11eb-84bb-449ef5d7dbe9.png)
+
+![image](https://user-images.githubusercontent.com/27897422/123192491-52de7300-d4a3-11eb-837d-c5b358f6cd01.png)
+
 
